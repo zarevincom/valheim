@@ -1,0 +1,35 @@
+
+services:
+  valheim:
+    image: mbround18/valheim:latest
+    env_file:
+      - valheim.env
+    container_name: valheim-server
+    restart: unless-stopped
+    ports:
+      - "2456:2456/udp"
+      - "2457:2457/udp" 
+      - "2458:2458/udp"
+    environment:
+      - PORT=${PORT:-2456}
+      - NAME=Karjalainen
+      - WORLD=${WORLD_NAME:-Dedicated}
+      - PASSWORD=Valheim123456
+      - TZ=${TIMEZONE:-Europe/Moscow}
+      - PUBLIC=${PUBLIC_SERVER:-1}
+      - AUTO_UPDATE=${AUTO_UPDATE:-1}
+      - AUTO_BACKUP=${AUTO_BACKUP:-1}
+      - AUTO_BACKUP_SCHEDULE=${BACKUP_SCHEDULE:-*/15 * * * *}
+      - AUTO_BACKUP_REMOVE_OLD=${BACKUP_REMOVE_OLD:-1}
+      - AUTO_BACKUP_DAYS_TO_LIVE=${BACKUP_DAYS_TO_LIVE:-3}
+      - TYPE=${SERVER_TYPE:-Vanilla}
+    volumes:
+      - ./valheim/saves:/home/steam/.config/unity3d/IronGate/Valheim
+      - ./valheim/server:/home/steam/valheim
+      - ./valheim/logs:/home/steam/valheim/logs
+    networks:
+      - valheim-network
+
+networks:
+  valheim-network:
+    driver: bridge
